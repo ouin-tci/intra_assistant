@@ -1,0 +1,6 @@
+input.memberChk + label:before {
+    content: 'メンバー一覧を表示';
+}
+input.memberChk:checked + label:before {
+    content: 'メンバー一覧を非表示';
+}
