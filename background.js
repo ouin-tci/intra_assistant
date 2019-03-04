@@ -1,7 +1,37 @@
 'use strict';
 
-jQuery(document).ready(function(){
 
+function setPriorty() {
+
+  var btn = $('<input type="button" value="priority">');
+  $("select[name=gid]").parent().before(btn);
+  btn.on('click', function(){
+    $("#content table.outer tr:gt(2) td:first-child a").each(function(){
+      var chk = $('<input name="priorty" type="checkbox"/>');
+      chk.val($(this).text().trim());
+      $(this).before(chk);
+    });
+
+    $(this).val('OK');
+    chrome.storage.local.get(['key'], function(result) {
+      console.log('Value currently is ' + result.key);
+    });
+  
+  });
+
+  $("body").on('click', 'input[name=priorty]', function(){
+    var priorityLst = [];
+    $('input[name=priorty]:checked').each(function(){
+      priorityLst.push($(this).val());
+    });
+
+    chrome.storage.local.set({'priorityLst': priorityLst}, function() {
+      console.log('Value is set to ' , priorityLst);
+    });
+  });
+}
+
+function setMemberList() {
   //メンバー
   function split( val ) {
     return val.split( /,\s*/ );
@@ -108,6 +138,20 @@ jQuery(document).ready(function(){
       endmin.val(hyphen);
     }
   });
+}
 
+jQuery(document).ready(function(){
+
+  var pathname = window.location.pathname.split("/").slice(-1).pop();
+  switch (pathname) {
+    case "weekly.php":
+      setPriorty();
+      break;
+    case "update.php":
+    case "regist.php":
+      setMemberList();
+    default:
+      break;
+  }
 });
 

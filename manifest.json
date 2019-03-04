@@ -3,11 +3,13 @@
   "version": "1.02",
   "description": "スケジュール追加／更新する時に参加メンバーの選択を容易にする。",
   "permissions": [
+    "storage",
     "https://www.tci-cn.co.jp/intra/*"
   ],
   "content_scripts": [
     {
       "matches": [
+        "https://www.tci-cn.co.jp/intra/modules/fischher/weekly.php*",
         "https://www.tci-cn.co.jp/intra/modules/fischher/regist.php*", 
         "https://www.tci-cn.co.jp/intra/modules/fischher/update.php*"],
 
