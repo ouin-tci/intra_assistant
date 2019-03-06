@@ -9,6 +9,7 @@
   "content_scripts": [
     {
       "matches": [
+        "https://www.tci-cn.co.jp/intra/",
         "https://www.tci-cn.co.jp/intra/modules/fischher/weekly.php*",
         "https://www.tci-cn.co.jp/intra/modules/fischher/regist.php*", 
         "https://www.tci-cn.co.jp/intra/modules/fischher/update.php*"],

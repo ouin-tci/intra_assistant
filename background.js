@@ -6,7 +6,7 @@ function setPriorty() {
   function toggleRow() {
     chrome.storage.local.get(['priorityLst'], function(result) {
       if(!result.priorityLst || result.priorityLst.length == 0) return;
-      $('#content table.outer tr:gt(2) td:first-child a').each(function() {
+      $('table.outer tr:gt(2) td:first-child a').each(function() {
         var userName = $(this).text().trim();
         var show = result.priorityLst.includes(userName);
         $(this).parent().parent().toggle(show);
@@ -16,13 +16,13 @@ function setPriorty() {
 
   toggleRow();
 
-  var btn = $('<input type="button" value="優先表示">');
+  var btn = $('<input type="button" value="優先表示設定">');
   $("select[name=gid]").parent().before(btn);
 
   function showPriority(){
-    $('#content table.outer tr').show();
+    $('table.outer tr').show();
 
-    $("#content table.outer tr:gt(2) td:first-child a").each(function() {
+    $("table.outer tr:gt(2) td:first-child a").each(function() {
       var chk = $('<input name="priorty" type="checkbox"/>');
 
       var userName = $(this).text().trim();
@@ -40,8 +40,8 @@ function setPriorty() {
   }
 
   function savePriority() {
-    btn.val('優先表示');
-    $('#content table.outer tr:gt(2) td:first-child :checkbox').remove();
+    btn.val('優先表示設定');
+    $('table.outer tr:gt(2) td:first-child :checkbox').remove();
     toggleRow();
     btn.one('click', showPriority);
   }
@@ -176,6 +176,9 @@ jQuery(document).ready(function(){
     case "regist.php":
       setMemberList();
     default:
+      if(window.location.pathname == "/intra/") {
+        setPriorty();
+      }
       break;
   }
 });
