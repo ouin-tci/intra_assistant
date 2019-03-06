@@ -3,25 +3,54 @@
 
 function setPriorty() {
 
-  var btn = $('<input type="button" value="priority">');
+  function toggleRow() {
+    chrome.storage.local.get(['priorityLst'], function(result) {
+      if(!result.priorityLst || result.priorityLst.length == 0) return;
+      $('#content table.outer tr:gt(2) td:first-child a').each(function() {
+        var userName = $(this).text().trim();
+        var show = result.priorityLst.includes(userName);
+        $(this).parent().parent().toggle(show);
+      });
+    });
+  };
+
+  toggleRow();
+
+  var btn = $('<input type="button" value="優先表示">');
   $("select[name=gid]").parent().before(btn);
-  btn.on('click', function(){
-    $("#content table.outer tr:gt(2) td:first-child a").each(function(){
+
+  function showPriority(){
+    $('#content table.outer tr').show();
+
+    $("#content table.outer tr:gt(2) td:first-child a").each(function() {
       var chk = $('<input name="priorty" type="checkbox"/>');
-      chk.val($(this).text().trim());
+
+      var userName = $(this).text().trim();
+      chk.val(userName);
+
+      chrome.storage.local.get(['priorityLst'], function(result) {
+        chk.prop('checked', result.priorityLst.includes(userName));
+      });
+
       $(this).before(chk);
     });
 
-    $(this).val('OK');
-    chrome.storage.local.get(['key'], function(result) {
-      console.log('Value currently is ' + result.key);
-    });
-  
-  });
+    btn.val('OK');
+    btn.one('click', savePriority);
+  }
 
-  $("body").on('click', 'input[name=priorty]', function(){
+  function savePriority() {
+    btn.val('優先表示');
+    $('#content table.outer tr:gt(2) td:first-child :checkbox').remove();
+    toggleRow();
+    btn.one('click', showPriority);
+  }
+
+  btn.one('click', showPriority);
+  
+  $("body").on('click', 'input[name=priorty]', function() {
     var priorityLst = [];
-    $('input[name=priorty]:checked').each(function(){
+    $('input[name=priorty]:checked').each(function() {
       priorityLst.push($(this).val());
     });
 
@@ -32,10 +61,6 @@ function setPriorty() {
 }
 
 function setMemberList() {
-  //メンバー
-  function split( val ) {
-    return val.split( /,\s*/ );
-  }
   function extractLast( term ) {
     return split( term ).pop();
   }

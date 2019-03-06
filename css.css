@@ -4,3 +4,7 @@ input.memberChk + label:before {
 input.memberChk:checked + label:before {
     content: 'メンバー一覧を非表示';
 }
+
+table.outer th:first-child {
+    width: 100px;
+}
