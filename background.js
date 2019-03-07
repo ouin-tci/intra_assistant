@@ -6,6 +6,7 @@ function setPriorty() {
   function toggleRow() {
     chrome.storage.local.get(['priorityLst'], function(result) {
       if(!result.priorityLst || result.priorityLst.length == 0) return;
+
       $('table.outer tr:gt(2) td:first-child a').each(function() {
         var userName = $(this).text().trim();
         var show = result.priorityLst.includes(userName);
@@ -20,30 +21,27 @@ function setPriorty() {
   $("select[name=gid]").parent().before(btn);
 
   function showPriority(){
-    $('table.outer tr').show();
+    chrome.storage.local.get(['priorityLst'], function(result) {
+      var priorityLst = [];
+      priorityLst = result.priorityLst || [];    
+      
+      $('table.outer tr').show();
+      $("table.outer tr:gt(2) td:first-child a").each(function() {
+        var userName = $(this).text().trim();
+        var chk = $('<input name="priorty" type="checkbox"/>');
+        chk.prop('checked', priorityLst.includes(userName)).val(userName);;
 
-    $("table.outer tr:gt(2) td:first-child a").each(function() {
-      var chk = $('<input name="priorty" type="checkbox"/>');
-
-      var userName = $(this).text().trim();
-      chk.val(userName);
-
-      chrome.storage.local.get(['priorityLst'], function(result) {
-        chk.prop('checked', result.priorityLst.includes(userName));
+        $(this).before(chk);
       });
 
-      $(this).before(chk);
+      btn.one('click', savePriority).val('OK');  
     });
-
-    btn.val('OK');
-    btn.one('click', savePriority);
   }
 
   function savePriority() {
-    btn.val('優先表示設定');
     $('table.outer tr:gt(2) td:first-child :checkbox').remove();
     toggleRow();
-    btn.one('click', showPriority);
+    btn.one('click', showPriority).val('優先表示設定');;
   }
 
   btn.one('click', showPriority);
