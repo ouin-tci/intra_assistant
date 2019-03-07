@@ -8,3 +8,7 @@ input.memberChk:checked + label:before {
 table.outer th:first-child {
     width: 100px;
 }
+
+table.outer td:first-child input[type='checkbox'] {
+    margin: 6px;
+}
