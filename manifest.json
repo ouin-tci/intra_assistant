@@ -1,6 +1,6 @@
 {
   "name": "intraアシスタント",
-  "version": "1.05",
+  "version": "1.08",
   "description": "スケジュール追加／更新する時に参加メンバーの選択を容易にする。",
   "permissions": [
     "storage",

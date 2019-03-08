@@ -178,8 +178,13 @@ jQuery(document).ready(function(){
     case "regist.php":
       setMemberList();
     default:
-      if(window.location.pathname == "/intra/") {
-        setPriorty();
+      switch (window.location.pathname) {
+        case "/intra/" :
+        case "/intra/modules/fischher/" :
+          setPriorty();
+          break;
+        default:
+          break;
       }
       break;
   }
