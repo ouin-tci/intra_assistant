@@ -1,6 +1,6 @@
 {
   "name": "intraアシスタント",
-  "version": "1.09",
+  "version": "1.11",
   "description": "スケジュール追加／更新する時に参加メンバーの選択を容易にする。",
   "permissions": [
     "storage",
@@ -19,7 +19,7 @@
       "js": ["jquery-3.3.1.min.js", "jquery-ui-1.12.1.custom/jquery-ui.min.js", "background.js"]
     }
   ],
-  "web_accessible_resources": ["jquery-ui-1.12.1.custom/images/*"],
+  "web_accessible_resources": ["jquery-ui-1.12.1.custom/*"],
   "icons": {
     "16": "images/get_started16.png",
     "32": "images/get_started32.png",

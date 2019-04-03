@@ -17,8 +17,46 @@ function setPriorty() {
 
   toggleRow();
 
-  var btn = $('<input type="button" value="優先表示設定">');
-  $("select[name=gid]").parent().before(btn);
+  var btn = $('<input type="button" value="優先表示設定">').css({marginLeft: "10px"});
+  var updateBtn = $("input[type='submit']:not([name='not_submit'])");
+  updateBtn.after(btn);
+
+  var datepicker =  $('<input type="button" value="日付選択" >').css({marginLeft: "10px"});
+  btn.after(datepicker);
+  
+  datepicker.datepicker({onSelect: function(dateText){
+    var url = "https://www.tci-cn.co.jp/intra/modules/fischher/weekly.php";
+    var strs = dateText.split("/");
+    var params = ["?year=" + strs[0], "month=" + strs[1], "day=" + strs[2]].join("&");
+    window.location = url + params;
+  }, dateFormat : 'yy/m/d', 
+  afterShow: function(params) {
+    var bgImg = chrome.extension.getURL("jquery-ui-1.12.1.custom/images/ui-icons_444444_256x240.png");
+    $(".ui-icon, .ui-widget-content .ui-icon").css({backgroundImage: "url(" + bgImg + ")"})
+  }
+  });
+  btn.after(datepicker);
+
+  var unchkAllBtn = $('<input id="unchkAllBtn" type="button" value="全員チェック外す">').css({marginLeft: "10px"});
+  unchkAllBtn.hide();
+  btn.after(unchkAllBtn);
+  unchkAllBtn.on("click", function(){
+    $(":checkbox[name='priorty']").prop("checked", false);
+    chrome.storage.local.set({'priorityLst': []}, function() {});
+  });
+
+  var chkAllBtn = $('<input id="unchkAllBtn" type="button" value="全員チェックする">').css({marginLeft: "10px"});
+  chkAllBtn.hide();
+  unchkAllBtn.after(chkAllBtn);
+  chkAllBtn.on("click", function () {
+    var priorityLst = [];
+    $(":checkbox[name='priorty']").each(function(){
+      $(this).prop("checked", true);
+      priorityLst.push($(this).next().text().trim());
+    });
+
+    chrome.storage.local.set({'priorityLst': priorityLst}, function() {});
+  });
 
   function showPriority(){
     chrome.storage.local.get(['priorityLst'], function(result) {
@@ -34,14 +72,18 @@ function setPriorty() {
         $(this).before(chk);
       });
 
-      btn.one('click', savePriority).val('OK');  
+      btn.one('click', savePriority).val('OK');
+      unchkAllBtn.toggle();
+      chkAllBtn.toggle();
     });
   }
 
   function savePriority() {
     $('table.outer tr:gt(2) td:first-child :checkbox').remove();
     toggleRow();
-    btn.one('click', showPriority).val('優先表示設定');;
+    btn.one('click', showPriority).val('優先表示設定');
+    unchkAllBtn.toggle();
+    chkAllBtn.toggle();
   }
 
   btn.one('click', showPriority);
@@ -53,7 +95,7 @@ function setPriorty() {
     });
 
     chrome.storage.local.set({'priorityLst': priorityLst}, function() {
-      console.log('Value is set to ' , priorityLst);
+      // console.log('Value is set to ' , priorityLst);
     });
   });
 }
@@ -170,6 +212,20 @@ function setMemberList() {
 jQuery(document).ready(function(){
 
   var pathname = window.location.pathname.split("/").slice(-1).pop();
+  if($("#legacy_xoopsform_block_submit").length) return;
+
+  $.datepicker._showDatepicker_original = $.datepicker._showDatepicker;
+  $.datepicker._showDatepicker = function(event) {
+      $.datepicker._showDatepicker_original(event);
+      console.log("event", event);
+      var inst = $.datepicker._getInst( event.target );
+
+      var afterShow = $.datepicker._get(inst, 'afterShow');
+      if (afterShow) {
+        afterShow.apply();
+      }
+  }
+
   switch (pathname) {
     case "weekly.php":
       setPriorty();
@@ -181,6 +237,7 @@ jQuery(document).ready(function(){
       switch (window.location.pathname) {
         case "/intra/" :
         case "/intra/modules/fischher/" :
+        case "/intra/modules/fischher/index.php" :
           setPriorty();
           break;
         default:
