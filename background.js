@@ -217,7 +217,6 @@ jQuery(document).ready(function(){
   $.datepicker._showDatepicker_original = $.datepicker._showDatepicker;
   $.datepicker._showDatepicker = function(event) {
       $.datepicker._showDatepicker_original(event);
-      console.log("event", event);
       var inst = $.datepicker._getInst( event.target );
 
       var afterShow = $.datepicker._get(inst, 'afterShow');
