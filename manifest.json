@@ -1,6 +1,6 @@
 {
   "name": "intraアシスタント",
-  "version": "1.11",
+  "version": "1.13",
   "description": "スケジュール追加／更新する時に参加メンバーの選択を容易にする。",
   "permissions": [
     "storage",
@@ -11,6 +11,7 @@
       "matches": [
         "https://www.tci-cn.co.jp/intra/",
         "https://www.tci-cn.co.jp/intra/modules/fischher/",
+        "https://www.tci-cn.co.jp/intra/modules/fischher/index.php*",
         "https://www.tci-cn.co.jp/intra/modules/fischher/weekly.php*",
         "https://www.tci-cn.co.jp/intra/modules/fischher/regist.php*", 
         "https://www.tci-cn.co.jp/intra/modules/fischher/update.php*"],

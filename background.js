@@ -1,17 +1,22 @@
 'use strict';
 
+var data  = {}; 
+chrome.storage.local.get(['priorityLst'], function (result) {
+  var tmpdata = result && result.priorityLst || {};
+  data = Array.isArray(tmpdata) ? {"2": tmpdata} : tmpdata;
+});
 
 function setPriorty() {
 
   function toggleRow() {
-    chrome.storage.local.get(['priorityLst'], function(result) {
-      if(!result.priorityLst || result.priorityLst.length == 0) return;
 
-      $('table.outer tr:gt(2) td:first-child a').each(function() {
-        var userName = $(this).text().trim();
-        var show = result.priorityLst.includes(userName);
-        $(this).parent().parent().toggle(show);
-      });
+    var priorityLst = data[gid];
+    if(!priorityLst || priorityLst.length == 0) return;
+
+    $('table.outer tr:gt(2) td:first-child a').each(function() {
+      var userName = $(this).text().trim();
+      var show = priorityLst.includes(userName);
+      $(this).parent().parent().toggle(show);
     });
   };
 
@@ -42,7 +47,8 @@ function setPriorty() {
   btn.after(unchkAllBtn);
   unchkAllBtn.on("click", function(){
     $(":checkbox[name='priorty']").prop("checked", false);
-    chrome.storage.local.set({'priorityLst': []}, function() {});
+    data[gid] = [];
+    chrome.storage.local.set({'priorityLst': data}, function() {});
   });
 
   var chkAllBtn = $('<input id="unchkAllBtn" type="button" value="全員チェックする">').css({marginLeft: "10px"});
@@ -55,13 +61,14 @@ function setPriorty() {
       priorityLst.push($(this).next().text().trim());
     });
 
-    chrome.storage.local.set({'priorityLst': priorityLst}, function() {});
+    data[gid] = priorityLst;
+    chrome.storage.local.set({'priorityLst': data}, function() {});
   });
 
   function showPriority(){
-    chrome.storage.local.get(['priorityLst'], function(result) {
-      var priorityLst = [];
-      priorityLst = result.priorityLst || [];    
+    // chrome.storage.local.get(['priorityLst'], function(result) {
+      var priorityLst = data[gid]|| [];
+      // priorityLst = result.priorityLst || [];    
       
       $('table.outer tr').show();
       $("table.outer tr:gt(2) td:first-child a").each(function() {
@@ -75,7 +82,7 @@ function setPriorty() {
       btn.one('click', savePriority).val('OK');
       unchkAllBtn.toggle();
       chkAllBtn.toggle();
-    });
+    // });
   }
 
   function savePriority() {
@@ -94,11 +101,15 @@ function setPriorty() {
       priorityLst.push($(this).val());
     });
 
-    chrome.storage.local.set({'priorityLst': priorityLst}, function() {
+    data[gid] = priorityLst;
+
+    chrome.storage.local.set({'priorityLst': data}, function() {
       // console.log('Value is set to ' , priorityLst);
     });
   });
 }
+
+var gid  = $('select[name=gid]').val();
 
 function setMemberList() {
   function split( val ) {
